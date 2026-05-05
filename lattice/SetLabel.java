@@ -47,6 +47,20 @@ public class SetLabel implements Label {
     }
 
     @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof SetLabel)) {
+            return false;
+        }
+        SetLabel other = (SetLabel) obj;
+        return this.owners.equals(other.owners);
+    }
+
+    @Override
+    public int hashCode() {
+        return owners.hashCode();
+    }
+
+    @Override
     public String toString() {
         return owners.toString();
     }

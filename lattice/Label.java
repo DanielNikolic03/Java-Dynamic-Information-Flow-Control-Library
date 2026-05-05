@@ -6,5 +6,4 @@ public interface Label {
 
     //Combine this label with another label.
     Label join(Label other);
-
 }
