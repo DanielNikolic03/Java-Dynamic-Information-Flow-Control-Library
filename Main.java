@@ -1,6 +1,5 @@
 import core.IFCContext;
 import core.LabeledVar;
-import io.IFCOutputChannel;
 import lattice.Label;
 import lattice.Labeled;
 import lattice.SetLabel;
