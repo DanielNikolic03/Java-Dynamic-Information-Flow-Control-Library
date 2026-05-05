@@ -1,5 +1,9 @@
 package core;
 
+import java.util.function.Supplier;
+
+import exceptions.IFCBreakException;
+import exceptions.IFCContinueException;
 import lattice.Label;
 import lattice.Labeled;
 import lattice.SetLabel;
@@ -26,4 +30,39 @@ public class IFCContext {
             pcLabel.set(previousPc);
         }
     }
+
+    public static void doBreak() {
+        throw IFCBreakException.INSTANCE;
+    }
+
+    public static void doContinue() {
+        throw IFCContinueException.INSTANCE;
+    }
+
+    public static void runWhile(Supplier<Labeled<Boolean>> conditionSupplier, Runnable block) {
+        Label previousPC = pcLabel.get();
+
+        try {
+            while (true) {
+                Labeled<Boolean> condition = conditionSupplier.get();
+                Label newPC = previousPC.join(condition.getLabel());
+                pcLabel.set(newPC);
+
+                if(!condition.getValue()) {
+                    break;
+                }
+
+                try {
+                    block.run();
+                } catch (IFCContinueException e) {
+                    continue;
+                } catch (IFCBreakException e) {
+                    break;
+                }
+            }
+        } finally {
+            pcLabel.set(previousPC);
+        }
+    }
+
 }
