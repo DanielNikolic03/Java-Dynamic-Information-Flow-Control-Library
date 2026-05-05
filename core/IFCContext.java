@@ -2,10 +2,10 @@ package core;
 
 import lattice.Label;
 import lattice.Labeled;
-import lattice.LevelLabel;
+import lattice.SetLabel;
 
 public class IFCContext {
-    private static final ThreadLocal<Label> pcLabel = ThreadLocal.withInitial(() -> LevelLabel.LOW);
+    private static final ThreadLocal<Label> pcLabel = ThreadLocal.withInitial(() -> new SetLabel());
 
     public static Label getPcLabel() {
         return pcLabel.get();

@@ -19,9 +19,4 @@ public enum LevelLabel implements Label {
         }
         return LOW;
     }
-
-    @Override
-    public Label getPublic() {
-        return LOW;
-    }
 }
