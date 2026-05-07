@@ -21,7 +21,7 @@ public class LabeledVar<T> {
 
     public void set(Labeled<T> newData) {
         // We start wth Explicit flow check
-        // Can the incominb data label flow into this variables clearence?
+        // Can the incoming data label flow into this variables clearence?
 
         if(!newData.getLabel().flowsTo(this.clearance)) {
             throw new ExplicitFlowException("Explicit Flow Violation: {"+newData.getLabel()+"} -> {"+this.clearance+"}");

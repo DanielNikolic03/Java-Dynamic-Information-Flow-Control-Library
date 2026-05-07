@@ -89,4 +89,20 @@ public class IFCOps {
         return compute(op1, op2, (Collection<E> x, Collection<E> y) -> x.contains(y));
     }
 
+
+    //Logical helper operators
+    
+    public static Labeled<Boolean> not(Labeled<Boolean> op1) {
+        return compute(op1, (Boolean x) -> !x);
+    }
+
+    public static Labeled<Boolean> and(Labeled<Boolean> op1, Labeled<Boolean> op2) {
+        return compute(op1, op2, (Boolean x, Boolean y) -> x && y);
+    }
+
+    public static Labeled<Boolean> or(Labeled<Boolean> op1, Labeled<Boolean> op2) {
+        return compute(op1, op2, (Boolean x, Boolean y) -> x || y);
+    }
+
+
 }
