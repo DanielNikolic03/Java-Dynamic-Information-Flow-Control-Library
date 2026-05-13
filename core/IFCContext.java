@@ -10,9 +10,14 @@ import lattice.SetLabel;
 
 public class IFCContext {
     private static final ThreadLocal<Label> pcLabel = ThreadLocal.withInitial(() -> new SetLabel());
+    private static final ThreadLocal<Label> blockingLabel = ThreadLocal.withInitial(() -> new SetLabel());
 
     public static Label getPcLabel() {
         return pcLabel.get();
+    }
+
+    public static Label getBlockingLabel() {
+        return blockingLabel.get();
     }
 
     public static void runIf(Labeled<Boolean> condition, Runnable block) {
@@ -20,8 +25,10 @@ public class IFCContext {
         Label previousPc = pcLabel.get();
 
         try {
-            Label newPc = previousPc.join(condition.getLabel());
-            pcLabel.set(newPc);
+            Label conditionLabel = condition.getLabel();
+            pcLabel.set(previousPc.join(conditionLabel));
+
+            blockingLabel.set(blockingLabel.get().join(conditionLabel));
 
             if (condition.getValue()) {
                 block.run();
@@ -45,8 +52,10 @@ public class IFCContext {
         try {
             while (true) {
                 Labeled<Boolean> condition = conditionSupplier.get();
-                Label newPC = previousPC.join(condition.getLabel());
-                pcLabel.set(newPC);
+                Label conditionLabel = condition.getLabel();
+                pcLabel.set(previousPC.join(conditionLabel));
+
+                blockingLabel.set(blockingLabel.get().join(conditionLabel));
 
                 if(!condition.getValue()) {
                     break;

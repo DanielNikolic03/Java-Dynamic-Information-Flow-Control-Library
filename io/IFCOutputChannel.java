@@ -1,6 +1,7 @@
 package io;
 
 import core.IFCContext;
+import exceptions.BlockingLabelFlowException;
 import exceptions.ExplicitFlowException;
 import exceptions.ImplicitFlowException;
 import lattice.Label;
@@ -23,6 +24,12 @@ public class IFCOutputChannel {
         Label currentPC = IFCContext.getPcLabel();
         if (!currentPC.flowsTo(this.channelClearance)) {
             throw new ImplicitFlowException("Implicit Flow Violation: Cannot write to a "+this.channelClearance+" output channel from within a "+currentPC + " context.");
+        }
+
+        //Blocking label check
+        Label currentBlocking = IFCContext.getBlockingLabel();
+        if(!currentBlocking.flowsTo(this.channelClearance)) {
+            throw new BlockingLabelFlowException("Progess Leak Violation: Cannot write to a "+ this.channelClearance + " output channel because the theard's blocking label is elevated to " + currentBlocking);
         }
 
 
