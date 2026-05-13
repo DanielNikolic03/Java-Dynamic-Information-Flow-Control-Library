@@ -4,6 +4,8 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import core.IFCContext;
+import exceptions.IFCViolationException;
+import lattice.Authority;
 import lattice.Label;
 import lattice.Labeled;
 
@@ -104,5 +106,21 @@ public class IFCOps {
         return compute(op1, op2, (Boolean x, Boolean y) -> x || y);
     }
 
+
+    //Declassify
+    // Following troupe standard: given L_from, an authority of L_auth and target L_to
+    //Is allowed if l_from subset L_to union L_auth
+    public static <T> Labeled<T> declassify(Labeled<T> data, Authority auth, Label targetLabel) {
+        Label lFrom = data.getLabel();
+        Label lTo = targetLabel;
+        Label lAuth = auth.getEfficacy();
+
+        // Check if l_from flows to l_to joined with l_auth
+        Label combinedTarget = lTo.join(lAuth);
+        if (!lFrom.flowsTo(combinedTarget)) {
+            throw new IFCViolationException("Declassification failed: Authority {"+lAuth+"} is insufficient to declassify from {"+lFrom+"} to {"+lTo+"}");
+        }
+        return new Labeled<>(data.getValue(), targetLabel);
+    }
 
 }

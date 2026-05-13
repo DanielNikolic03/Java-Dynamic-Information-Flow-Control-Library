@@ -47,6 +47,19 @@ public class SetLabel implements Label {
     }
 
     @Override
+    public Label meet(Label other) {
+        if(!(other instanceof SetLabel)) {
+            throw new IllegalArgumentException("Cannot meet SetLabel with a different label type");
+        }
+        SetLabel otherLabel = (SetLabel) other;
+
+        Set<String> intersectedOwners = new HashSet<>(this.owners);
+        intersectedOwners.retainAll(otherLabel.owners);
+
+        return new SetLabel(intersectedOwners);
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof SetLabel)) {
             return false;

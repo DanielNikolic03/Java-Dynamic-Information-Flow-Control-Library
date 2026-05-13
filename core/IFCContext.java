@@ -4,6 +4,8 @@ import java.util.function.Supplier;
 
 import exceptions.IFCBreakException;
 import exceptions.IFCContinueException;
+import exceptions.IFCViolationException;
+import lattice.Authority;
 import lattice.Label;
 import lattice.Labeled;
 import lattice.SetLabel;
@@ -71,6 +73,22 @@ public class IFCContext {
             }
         } finally {
             pcLabel.set(previousPC);
+        }
+    }
+
+    public static void runWithPini(Authority auth, Runnable block) {
+        Label previousBlocking = blockingLabel.get();
+        
+        try {
+            block.run();
+        } finally {
+            Label currentTaintedBlocking = blockingLabel.get();
+            Label combinedTarget = previousBlocking.join(auth.getEfficacy());
+
+            if(!currentTaintedBlocking.flowsTo(combinedTarget)) {
+                throw new IFCViolationException("Pini Declassification failed. Authority {" + auth.getEfficacy() + "} is insufficient to declassify blocking label from {"+currentTaintedBlocking+"} back to {"+previousBlocking+"}");
+            }
+            blockingLabel.set(previousBlocking);
         }
     }
 

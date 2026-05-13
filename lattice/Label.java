@@ -6,4 +6,7 @@ public interface Label {
 
     //Combine this label with another label.
     Label join(Label other);
+    
+    //Generate greatest lower bound, used for network attunuation of data and authority.
+    Label meet(Label other);
 }
