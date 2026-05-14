@@ -92,4 +92,8 @@ public class IFCContext {
         }
     }
 
+    public static void taintBlockingLabel(Label extraTaint) {
+        blockingLabel.set(blockingLabel.get().join(extraTaint));
+    }
+
 }

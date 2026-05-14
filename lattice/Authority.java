@@ -11,7 +11,7 @@ public final class Authority {
         return efficacy;
     }
 
-    public Authority attentuate(Label requestedEfficacy) {
+    public Authority attenuate(Label requestedEfficacy) {
         if (!requestedEfficacy.flowsTo(this.efficacy)) {
             throw new IllegalArgumentException("Attenuation failed: Cannot increase authority. " + requestedEfficacy + " is no bounded by current efficacy " + this.efficacy);
         }
